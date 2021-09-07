@@ -22,7 +22,7 @@ public class PersonService {
 
 	public MessageResponseDTO createPerson(PersonDTO personDTO) {
 		Person personSaved = personRepository.save(personMapper.convertToPerson(personDTO));
-		return MessageResponseDTO.builder().message("Created person with ID " + personSaved.getId()).build();
+		return createMethodResponse(personSaved.getId(),"Created person with ID ");
 	}
 
 	public List<PersonDTO> getAllPersons() {
@@ -42,5 +42,15 @@ public class PersonService {
 
 	private Person verifyIfExists(Long id) throws PersonNotFoundException {
 		return personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
+	}
+
+	public MessageResponseDTO updateById(Long id, PersonDTO personDTO) throws PersonNotFoundException {
+		verifyIfExists(id);
+		Person personUpdate = personRepository.save(personMapper.convertToPerson(personDTO));
+		return createMethodResponse(personUpdate.getId(),"Updated person with ID ");
+	}
+
+	private MessageResponseDTO createMethodResponse(Long id,String message) {
+		return MessageResponseDTO.builder().message(message + id).build();
 	}
 }
